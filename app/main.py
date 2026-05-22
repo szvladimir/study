@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import httpx
+import os
 import requests 
 from openai import OpenAI
 
@@ -8,7 +9,7 @@ from openai import OpenAI
 app = FastAPI()
 # OpenAI client
 client = OpenAI(
-    api_key="YOUR_OPENAI_KEY"
+    api_key=os.environ["OPENAI_API_KEY"]
 )
 
 
