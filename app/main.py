@@ -9,7 +9,8 @@ from openai import OpenAI
 app = FastAPI()
 # OpenAI client
 client = OpenAI(
-    api_key=os.environ["OPENAI_API_KEY"]
+    api_key=os.environ["OPENAI_API_KEY"],
+    timeout=20.0    
 )
 
 
@@ -23,19 +24,23 @@ class WeatherRequest(BaseModel):
 
 @app.post("/weather")
 async def weather(req: WeatherRequest):
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
 
-    async with httpx.AsyncClient() as client:
-
-        r = await client.get(
-            f"https://wttr.in/{req.city}?format=j1"
-        )
-
+            r = await client.get(
+                f"https://wttr.in/{req.city}?format=j1"
+            )
+        r.raise_for_status()
         data = r.json()
-
-    return {
-        "city": req.city,
-        "temp": data["current_condition"][0]["temp_C"]
-    }
+        return {
+           "city": req.city,
+           "temp": data["current_condition"][0]["temp_C"]
+        }
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
+ 
 class PoemRequest(BaseModel):
     poet: str
     topic: str
@@ -48,20 +53,22 @@ async def make_poem(req: PoemRequest):
         f"{req.topic} "
         f"in style of {req.poet}"
     )
-
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[
-            {
+    try:
+        response = client.chat.completions.create(
+           model="gpt-4.1-mini",
+           messages=[
+              {
                 "role": "user",
                 "content": prompt
-            }
-        ]
-    )
+              }
+           ]
+        )
+        poem = response.choices[0].message.content
 
-    poem = response.choices[0].message.content
-
-    return {
-        "poem": poem
-    }
-
+        return {
+           "poem": poem
+        }
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
