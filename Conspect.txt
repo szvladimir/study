@@ -22,3 +22,126 @@
     item = await queue.get()
     queue.task_done()
     await queue.join()
+011. WebAPI    
+  from fastapi import FastAPI
+    app = FastAPI()
+    @app.get("/hello")
+    def hello():
+       return {
+        "message": "Hello"
+      }
+      app = FastAPI()
+
+    @app.get("/")
+    async def root():
+     return {"ok": True}
+
+     import requests
+    
+     ..... API для погоды
+     def weather_api(city):
+        r = requests.get(
+        "https://api.weatherapi.com/v1/current.json",
+        params={
+            "key": API_KEY,
+            "q": city
+        }
+    )
+    return r.json()
+ 
+    Результат
+    { "temp_c": 19,  "condition": "Cloudy" 
+    }
+   JSON 
+    {
+  "tool_call": {
+    "name": "get_weather",
+    "arguments": {
+      "city": "Berlin"
+    }
+  }
+}
+
+user_input = input()
+response = llm(user_input)
+if response.requires_tool:
+    result = call_tool(response.tool)
+    final = llm(
+        user_input,
+        tool_result=result
+    )
+    print(final)
+
+012. API call к OpenAI    
+  from fastapi import HTTPException
+  OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+class PoemRequest(BaseModel):
+    prompt: str
+
+
+@app.post("/poem")
+async def create_poem(request: PoemRequest):
+    url = "https://api.openai.com/v1/chat/completions"
+
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "model": "gpt-4.1-mini",
+        "messages": [
+            {"role": "user", "content": request.prompt}
+        ],
+    }
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(url, headers=headers, json=data)
+
+    response.raise_for_status()
+
+    result = response.json()
+    poem = result["choices"][0]["message"]["content"]
+
+    return {"poem": poem}
+
+  role:  system, user
+
+@app.post("/poem")
+async def create_poem(request: PoemRequest):
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(url, headers=headers, json=data)
+        response.raise_for_status()
+    except httpx.TimeoutException:.....
+
+    result = response.json()
+    return {"poem": result["choices"][0]["message"]["content"]}
+
+
+013. Python requests/httpx, virtualenv/uv
+    import httpx
+
+    URLS = [
+    "https://api.github.com",
+    "https://httpbin.org/get"
+    ]
+
+a   sync def fetch(client, url):
+      r = await client.get(url)
+      return r.status_code
+
+    async def main():
+    async with httpx.AsyncClient() as client:
+        results = await asyncio.gather(
+            *(fetch(client, u) for u in URLS)
+        )
+        print(results)
+    
+    asyncio.run(main())
+
+    virtualenv
+    uvicorn
+    uv
+    Pydantic
+    Docker
+    
