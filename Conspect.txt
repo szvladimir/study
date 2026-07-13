@@ -1,0 +1,24 @@
+010. async/await
+  import asyncio
+    async def a():
+      await asyncio.sleep(2)
+    ...
+    await asyncio.gather(a(), b())
+    asyncio.run(main())    
+
+  import aiohttp
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://example.com") as r:
+            text = await r.text()
+            print(text)
+  Для чатботов с асинхронным input 
+  message = await asyncio.to_thread(input, "Ты: ")
+  asyncio.create_task(bot_response(message))
+  message = await asyncio.to_thread(input, "Ты: ")
+
+  asyncio.Lock() 
+  queue = asyncio.Queue()
+    await queue.put(i)
+    item = await queue.get()
+    queue.task_done()
+    await queue.join()
