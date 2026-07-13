@@ -144,4 +144,25 @@ a   sync def fetch(client, url):
     uv
     Pydantic
     Docker
-    
+014. FastAPI
+    pip install fastapi uvicorn
+    Клиент → HTTP → LLM/Agent → JSON ответ
+
+    GET , POST
+    @app.get("/users")
+    async def users():
+       return ["Bob", "Alice"]
+    @app.post("/sum")
+    async def calc(a: int, b: int):
+       return {"result": a + b}   
+   
+   from fastapi import FastAPI
+   from pydantic import BaseModel
+   Мини AI chatbot на FastAPI
+   @app.post("/chat")
+   async def chat(msg: Msg):
+  return { "answer": f"Echo: {msg.text}" }
+
+  Streaming в FastAPI
+  WebSocket
+  
