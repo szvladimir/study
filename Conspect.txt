@@ -22,6 +22,7 @@
     item = await queue.get()
     queue.task_done()
     await queue.join()
+
 011. WebAPI    
   from fastapi import FastAPI
     app = FastAPI()
@@ -180,4 +181,99 @@ a   sync def fetch(client, url):
  016.  Docker container
        Docker container
        Как создать игру с разделенной игровой частью, думающей частиью, статистикой игроков итп
- 
+  =======================================================================================================
+
+021. Chat Completions
+  client = OpenAI()
+   response = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system",
+         "content": "Ты полезный помощник"},
+        {"role": "user", "content": "Напиши хокку про дождь" }])
+    print(response.choices[0].message.content)
+
+     "role": "assistant",
+     Streaming    chunk in stream:
+     temperature управляет случайностью от 0 до стабильности
+     max_tokens=300
+     Tools / Function Calling
+022. ReasoningModel
+   Примеры задач, где reasoning особенно полезен:
+   1. Сложная логика
+   2. Математика
+   3. Программирование
+   4. Поиск ошибки в коде
+   5. Планирование архитектуры проекта
+   6. Сравнение вариантов
+   7. Юридические/финансовые/технические рассуждения
+023. Tooling Cal в LLM
+  tools = [{
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Get weather",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string"
+                    }
+                },
+                "required": ["city"]
+            }}}]
+  response = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[{"role": "user","content": "Какая погода в Берлине?"}],
+    tools=tools
+  )
+  Используя dwscription к каждому из tool LLM выбирает соответствующий инструмент
+
+024. tool-enabled assistant Примеры
+
+025. Joint Embedding Architectures
+  разные типы данных (например, текст, изображения, аудио) переводятся в единое векторное пространство (embedding space), чтобы их можно было напрямую сравнивать
+ Отдельные энкодеры для каждого типа данных (например, CNN для изображений и Transformer для текста)
+ Общее embedding-пространство, куда они проецируются
+ Функцию потерь, которая:
+ сближает связанные объекты (картинка + её описание)
+ отдаляет несвязанные
+
+026.structured output, embedding и streaming
+ response_format={
+  "type": "json_schema",
+  "json_schema": {...}
+ }
+ Embedding — «векторное представление смысла»
+ Streaming — это когда модель отправляет ответ частями по мере генерации.
+
+027. AI CLI assistant.
+  пример  python assistant_cli.py    
+  чат с нарративом определенном на питоне и запуск от CLI
+
+028. Использование Tools в ChatGPT
+   1. Как я могу добавить в ChatGPT свой инструмент? Например API для поисков в домашнем архиве?
+     Шаг 1. Описываете tool   python
+     Шаг 2. Модель решает вызвать tool   json
+     Шаг 3. Ваш backend выполняет поиск   (call)
+     Шаг 4. Результат возвращается модели json
+     Шаг 5. Модель формирует ответ текст
+  2. MCP — современный способ
+    from mcp.server.fastmcp import FastMCP
+    mcp = FastMCP("archive")
+    @mcp.tool()
+   def search_archive(query: str) -> str:
+       return search_my_notes(query)
+   mcp.run()
+   3. RAG (Retrieval Augmented Generation)
+     Embeddings
+     text-embedding-3-large
+     bge-large
+     e5-large
+     Vector DB
+     FAISS
+     Qdrant
+     Chroma
+     Weaviate
+------------------------------------------------------------
+
