@@ -163,6 +163,21 @@ a   sync def fetch(client, url):
    async def chat(msg: Msg):
   return { "answer": f"Echo: {msg.text}" }
 
-  Streaming в FastAPI
-  WebSocket
-  
+    Streaming в FastAPI
+    WebSocket
+015. Structured JSON extraction
+  use response_format
+  client = OpenAI()
+  response = client.chat.completions.create(
+    ...
+    messages=[ {"role": "system", "content":...}, {"role": "user", "content":...}]
+    response_format={"type": "json_schema", "json_schema": ....
+
+   data = json.loads(response.choices[0].message.content)
+
+   RAG / Search
+
+ 016.  Docker container
+       Docker container
+       Как создать игру с разделенной игровой частью, думающей частиью, статистикой игроков итп
+ 
